@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Torus with Grid Divisions</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000; /* Set background to black for contrast */
+        }
+    </style>
+</head>
+<body>
+    <script type="module">
+        import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.min.js';
+        import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
+
+        // Set up the scene, camera, and renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Add orbit controls to rotate the camera around the torus
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+
+        // Create the torus geometry
+        const torusRadius = 10;
+        const tubeRadius = 3;
+        const radialSegments = 9;   // Represent the 9 divisions for Sudoku
+        const tubularSegments = 9;  // Represent the 9 divisions for Sudoku
+
+        const torusGeometry = new THREE.TorusGeometry(torusRadius, tubeRadius, radialSegments, tubularSegments);
+        
+        // Create a basic white material with black lines for visualization
+        const torusMaterial = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            wireframe: true,       // Display the grid lines
+            wireframeLinewidth: 2  // The width of the grid lines (note: might not be supported in all browsers)
+        });
+
+        // Create the torus mesh and add it to the scene
+        const torus = new THREE.Mesh(torusGeometry, torusMaterial);
+        scene.add(torus);
+
+        // Position the camera so it can see the torus clearly
+        camera.position.set(20, 20, 20);
+        camera.lookAt(0, 0, 0);
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Rotate the torus for better visualization
+            torus.rotation.x += 0.01;
+            torus.rotation.y += 0.01;
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
